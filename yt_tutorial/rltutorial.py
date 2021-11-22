@@ -31,10 +31,10 @@ def build_model(states, actions):
 def build_agent(model, actions):
 	# set up policy, memory and dqn agent
 	policy = BoltzmannQPolicy()
-	# NOTE dropped down limit from 50K in tutorial to 10K.
-	memory = SequentialMemory(limit=10000, window_length=1)
+	# NOTE dropped down limit from 50K in tutorial to 20K.
+	memory = SequentialMemory(limit=30001, window_length=1)
 	dqn = DQNAgent(model=model, memory=memory, policy=policy,
-			nb_actions=actions, nb_steps_warmup=10, target_model_update=1e-2)
+			nb_actions=actions, nb_steps_warmup=5, target_model_update=1e-2)
 	return dqn
 
 
@@ -58,10 +58,12 @@ def main():
 			action = random.choice([0, 1])
 			n_state, reward, done, infor = env.step(action)
 			score+=reward
+
 		print(f'Episode: {episode}, Score: {score}')
 
 	env.close()
 
+	# env = gym.make('CartPole-v0')
 	model = build_model(states, actions)
 
 	model.summary()
@@ -72,13 +74,19 @@ def main():
 	# comile with adam... mean absolute error
 	dqn.compile(Adam(learning_rate=1e-3), metrics=['mae'])
 	# keep up the training, environment, steps, no visualize... little bit of log info
-	# dropped down from the tutorial of 50K to 10K
-	dqn.fit(env, nb_steps=10000, visualize=False, verbose=1)
+	# dropped down from the tutorial of 50K to 20K
+	dqn.fit(env, nb_steps=30001, visualize=False, verbose=1)
 
 	scores = dqn.test(env, nb_episodes=100, visualize=False)
 	print(np.mean(scores.history['episode_reward']))
 
 	# if you want to see if visualized a few times...
+	_ = dqn.test(env, nb_episodes=5, visualize=True)
+
+	# this will save the weight... to where, I don't really know.
+	dqn.save_weights('dqn_weights.h5f', overwrite=True)
+
+	env.close()
 
 if __name__ == "__main__":
 	main()
