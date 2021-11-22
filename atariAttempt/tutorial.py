@@ -43,6 +43,7 @@ def main():
 
 	print(env.unwrapped.get_action_meanings())
 
+	example(env, actions)
 
 if __name__ == "__main__":
 	main()
