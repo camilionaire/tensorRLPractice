@@ -91,6 +91,12 @@ def main():
 	scores = dqn.test(env, nb_episodes=10, visualize=True)
 	print(np.mean(scores.history['episode_reward']))
 
+	dqn.save_weights('SavedWeights/10k-Fast/dqn_weights.h5f')
+
+	del model, dqn
+
+	dqn.load_weights('SavedWeights/10k-Fast/dqn_weights.h5f')
+
 	env.close()
 
 if __name__ == "__main__":
