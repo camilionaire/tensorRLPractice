@@ -8,7 +8,7 @@ from tensorflow.keras.layers import Dense, Flatten
 
 def example(env, actions):
 	episodes = 5
-	for episode in episodes:
+	for episode in range(1, episodes+1):
 		state = env.reset()
 		done = False
 		score = 0
@@ -17,7 +17,7 @@ def example(env, actions):
 			env.render()
 			# better way, I think. more... dynamic.
 			# action = random.choice([0, 1, 2, 3, 4, 5])
-			action = random.randint(actions)
+			action = random.randint(0, actions-1)
 			n_state, reward, done, info = env.step(action)
 			score+=reward
 
